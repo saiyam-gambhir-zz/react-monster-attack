@@ -1,13 +1,166 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+* {
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*:focus {
+  outline: none;
+}
+
+body {
+  font-family: 'Akaya Telivigala', cursive;
+  margin: 0;
+  padding: 20px;
+}
+
+.Game {
+  display: flex;
+  height: calc(100vh - 40px);
+  justify-content: space-between;
+}
+
+.Game .Left {
+  flex: .75;
+}
+
+.Game .Right {
+  flex: .23;
+  border: 2px solid #211a1d;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.Players {
+  display: flex;
+  height: calc(100vh - 130px);
+}
+
+.player {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  position: relative;
+}
+
+.playerType {
+  font-size: 50px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 1px #211a1d;
+  color: #211a1d;
+  text-align: center;
+}
+
+.background {
+  height: 100%;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transition: .2s;
+  width: 100%;
+  z-index: -1;
+}
+
+.player.normal {
+  border-right: 1px solid #211a1d;
+  border-left: 2px solid #211a1d;
+  border-top: 2px solid #211a1d;
+}
+
+.player.monster {
+  border-left: 1px solid #211a1d;
+  border-right: 2px solid #211a1d;
+  border-top: 2px solid #211a1d;
+}
+
+.player.normal .background {
+  background: #cffdff;
+  left: 0;
+}
+
+.player.monster .background {
+  background: #ffb9b9;
+  right: 0;
+}
+
+.ActionsContainer {
+  height: 90px;
+  padding: 20px;
+  border: 2px solid #211a1d;
+}
+
+.Actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Button {
+  border: 0;
+  height: 50px;
+  margin: 0;
+  min-width: 200px;
+  font-family: 'Akaya Telivigala', cursive;
+  font-size: 20px;
+  cursor: pointer;
+  flex: 1;
+  transition: .2s;
+  border: 2px solid #211a1d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.Button ~ .Button {
+  margin-left: 20px;
+}
+
+.Button.danger {
+  background: #fe6d73;
+}
+
+.Button.success {
+  background: #17c3b2;
+}
+
+.Button.warning {
+  background: #ffcb77;
+}
+
+.Button.primary {
+  background: #fef9ef;
+}
+
+.Button:hover {
+  border-color: transparent;
+}
+
+:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+
+:disabled:hover {
+  border-color: #211a1d;
+}
+
+.movesContainer {
+  border: 2px solid #211a1d;
+}
+
+.movesContainer + .movesContainer {
+  margin-top: 15px;
+}
+
+.monsterMove {
+  background: #ffb9b9;
+  padding: 10px;
+  text-transform: capitalize;
+  font-size: 18px;
+}
+
+.playerMove {
+  background: #cffdff;
+  padding: 10px;
+  text-transform: capitalize;
+  font-size: 18px;
 }
