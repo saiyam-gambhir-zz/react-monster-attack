@@ -109,13 +109,13 @@ class MonsterAttack extends Component {
     const { normal, monster } = this.state.players;
     if(normal.maxHealth <= 0) {
       alert('Monster won the battle!');
-      this.resetGameHandler();
+      this.resetHandler();
     } else if(monster.maxHealth <= 0) {
       alert('Player won the battle!');
-      this.resetGameHandler();
+      this.resetHandler();
     } else if(normal.maxHealth <= 0 && monster.maxHealth <= 0) {
       alert('OMG, Battle tied!');
-      this.resetGameHandler();
+      this.resetHandler();
     }
   };
 
