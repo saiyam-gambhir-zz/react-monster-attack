@@ -112,9 +112,9 @@ class MonsterAttack extends Component {
   };
 
   updateMoves = (attackType, monsterAttackDamage, playerAttackDamage) => {
-    let moves = this.movesGenerator(attackType, monsterAttackDamage, playerAttackDamage);
+    let move = this.movesGenerator(attackType, monsterAttackDamage, playerAttackDamage);
     let updatedMoves = this.state.moves;
-    updatedMoves = [...updatedMoves, moves];
+    updatedMoves = [...updatedMoves, move];
     this.setState({moves: updatedMoves});
   };
 
@@ -132,12 +132,12 @@ class MonsterAttack extends Component {
     }
   };
 
-  initAttack = (attackType, movesType) => {
+  initAttack = (attackType, moveType) => {
     let updatedPlayers = {...this.state.players};
     let attackDamage = this.attackDamageGenerator(updatedPlayers, attackType);
     const { monsterAttackDamage, playerAttackDamage } = attackDamage;
     this.attack(updatedPlayers, monsterAttackDamage, playerAttackDamage);
-    this.updateMoves(movesType, monsterAttackDamage, playerAttackDamage);
+    this.updateMoves(moveType, monsterAttackDamage, playerAttackDamage);
     this.setState({players: updatedPlayers});
     this.declareWinner();
   };
