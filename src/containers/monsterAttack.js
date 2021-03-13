@@ -63,20 +63,22 @@ class MonsterAttack extends Component {
 
   movesGenerator = (type, monsterAttackDamage, playerAttackDamage) => {
     let monsterMove = '', playerMove = '';
+    const monsterHardDamage = monsterAttackDamage > 14 ? `hard` : ``;
+    const playerHardDamage = playerAttackDamage > 14 ? `hard` : ``;
 
     switch (type) {
-      case 'attack':
-        monsterMove = `Monster hits player for ${monsterAttackDamage}`;
+      case 'normal':
+        monsterMove = `Monster hits player for ${monsterHardDamage} ${monsterAttackDamage}`;
         playerMove = `Player hits monster for ${playerAttackDamage}`;
         break;
 
-      case 'special-attack':
-        monsterMove = `Monster hits player for ${monsterAttackDamage}`;
-        playerMove = `Player hits monster for ${playerAttackDamage} with special attack`;
+      case 'special':
+        monsterMove = `Monster hits player for ${monsterHardDamage} ${monsterAttackDamage}`;
+        playerMove = `Player hits monster for ${playerHardDamage} ${playerAttackDamage} with special attack`;
         break;
 
       case 'heal':
-        monsterMove = `Monster hits player for ${monsterAttackDamage}`;
+        monsterMove = `Monster hits player for ${monsterHardDamage} ${monsterAttackDamage}`;
         playerMove = `Player heals for 10`;
         break;
 
@@ -141,11 +143,11 @@ class MonsterAttack extends Component {
   };
 
   attackHandler = () => {
-    this.initAttack('normal', 'attack');
+    this.initAttack('normal', 'normal');
   };
 
   specialAttackHandler = () => {
-    this.initAttack('special', 'special-attack');
+    this.initAttack('special', 'special');
   };
 
   playerHealHandler = () => {
