@@ -19,29 +19,30 @@ class MonsterAttack extends Component {
   };
 
   state = {
-    isSpecialAttackAvailable: false,
+    isSpecialAttackAvailable: true,
+    moves: [],
     players: {
       normal: {...this.createPlayer({maxAttackDamage: 10, type: 'normal'})},
       monster: {...this.createPlayer({maxAttackDamage: 20, maxHeal: 0, type: 'monster'})}
-    },
-    moves: []
+    }
   };
 
   attackDamageGenerator = (players, type) => {
     let playerAttackDamage = 0, monsterAttackDamage = 0;
+    const { normal, monster } = players;
 
     switch (type) {
       case 'special':
-        playerAttackDamage = helpers.genarateRandomNumber(players['normal'].specialAttackMinDamage, players['normal'].specialAttackMaxDamage);
+        playerAttackDamage = helpers.genarateRandomNumber(normal.specialAttackMinDamage, normal.specialAttackMaxDamage);
         break;
       case 'normal':
-        playerAttackDamage = helpers.genarateRandomNumber(players['normal'].minAttackDamage, players['normal'].maxAttackDamage);
+        playerAttackDamage = helpers.genarateRandomNumber(normal.minAttackDamage, normal.maxAttackDamage);
         break;
       default:
         break;
     }
 
-    monsterAttackDamage = helpers.genarateRandomNumber(players['monster'].minAttackDamage, players['monster'].maxAttackDamage);
+    monsterAttackDamage = helpers.genarateRandomNumber(monster.minAttackDamage, monster.maxAttackDamage);
 
     return {
       playerAttackDamage,
@@ -78,55 +79,81 @@ class MonsterAttack extends Component {
     }
   };
 
-  initAttack = (updatedPlayers, monsterAttackDamage, playerAttackDamage) => {
-    updatedPlayers['normal'].maxHealth -= monsterAttackDamage;
-    updatedPlayers['monster'].maxHealth -= playerAttackDamage;
+  isSpecialAttackAvailable = (updatePlayer) => {
+    return updatePlayer.maxHealth > 90;
   };
 
-  initHeal = (updatedPlayers, monsterAttackDamage) => {
-    updatedPlayers['normal'].maxHealth += updatedPlayers['normal'].maxHeal;
-    updatedPlayers['normal'].maxHealth -= monsterAttackDamage;
-  }
+  attack = (updatedPlayers, monsterAttackDamage, playerAttackDamage) => {
+    const { normal, monster } = updatedPlayers;
+    normal.maxHealth -= monsterAttackDamage;
+    monster.maxHealth -= playerAttackDamage;
+    this.setState({ isSpecialAttackAvailable: this.isSpecialAttackAvailable(normal)});
+  };
+
+  heal = (updatedPlayers, monsterAttackDamage) => {
+    const { normal } = updatedPlayers;
+    normal.maxHealth += normal.maxHeal;
+    normal.maxHealth -= monsterAttackDamage;
+    if(normal.maxHealth > 100) normal.maxHealth = 100;
+    this.setState({ isSpecialAttackAvailable: this.isSpecialAttackAvailable(normal)});
+  };
 
   updateMoves = (attackType, monsterAttackDamage, playerAttackDamage) => {
     let moves = this.movesGenerator(attackType, monsterAttackDamage, playerAttackDamage);
     let updatedMoves = this.state.moves;
-    updatedMoves = [...updatedMoves, moves];
+    updatedMoves = [moves, ...updatedMoves];
     this.setState({moves: updatedMoves});
   };
 
-  attackHandler = () => {
+  declareWinner = () => {
+    const { normal, monster } = this.state.players;
+    if(normal.maxHealth <= 0) {
+      alert('Monster won the battle!');
+      this.resetGameHandler();
+    } else if(monster.maxHealth <= 0) {
+      alert('Player won the battle!');
+      this.resetGameHandler();
+    } else if(normal.maxHealth <= 0 && monster.maxHealth <= 0) {
+      alert('OMG, Battle tied!');
+      this.resetGameHandler();
+    }
+  };
+
+  initAttack = (attackType, movesType) => {
     let updatedPlayers = {...this.state.players};
-    let attackDamage = this.attackDamageGenerator(updatedPlayers, 'normal');
+    let attackDamage = this.attackDamageGenerator(updatedPlayers, attackType);
     const { monsterAttackDamage, playerAttackDamage } = attackDamage;
-    this.initAttack(updatedPlayers, monsterAttackDamage, playerAttackDamage);
-    this.updateMoves('attack', monsterAttackDamage, playerAttackDamage);
+    this.attack(updatedPlayers, monsterAttackDamage, playerAttackDamage);
+    this.updateMoves(movesType, monsterAttackDamage, playerAttackDamage);
     this.setState({players: updatedPlayers});
+    this.declareWinner();
+  };
+
+  attackHandler = () => {
+    this.initAttack('normal', 'attack');
   };
 
   specialAttackHandler = () => {
-    let updatedPlayers = {...this.state.players};
-    let attackDamage = this.attackDamageGenerator(updatedPlayers, 'special');
-    const { monsterAttackDamage, playerAttackDamage } = attackDamage;
-    this.initAttack(updatedPlayers, monsterAttackDamage, playerAttackDamage);
-    this.updateMoves('special-attack', monsterAttackDamage, playerAttackDamage);
-    this.setState({players: updatedPlayers});
+    this.initAttack('special', 'special-attack');
   };
 
   playerHealHandler = () => {
     let updatedPlayers = {...this.state.players};
+    if(updatedPlayers.normal.maxHealth > 100) return;
     let attackDamage = this.attackDamageGenerator(updatedPlayers, 'normal');
     const { monsterAttackDamage } = attackDamage;
-    this.initHeal(updatedPlayers, monsterAttackDamage);
+    this.heal(updatedPlayers, monsterAttackDamage);
     this.updateMoves('heal', monsterAttackDamage, null);
     this.setState({players: updatedPlayers});
+    this.declareWinner();
   };
 
-  resetGameHandler = () => {
+  resetHandler = () => {
     let updatedPlayers = {...this.state.players};
-    updatedPlayers['normal'].maxHealth = 100;
-    updatedPlayers['monster'].maxHealth = 100;
-    this.setState({players: updatedPlayers, moves:[]});
+    const { normal, monster } = updatedPlayers;
+    normal.maxHealth = 100;
+    monster.maxHealth = 100;
+    this.setState({isSpecialAttackAvailable: true, moves:[], players: updatedPlayers});
   };
 
   renderPlayers = () => {
@@ -136,29 +163,26 @@ class MonsterAttack extends Component {
   };
 
   renderMoves = () => {
-    return this.state.moves.map((move, index) => (
-      <Move move={move} key={index} />
-      )
-    );
+    return this.state.moves.map((move, index) => <Move move={move} key={index} />);
   };
 
   render () {
     return (
       <>
-        <section className="Left">
+        <section className="LeftSection">
           <div className="Players">
             {this.renderPlayers()}
           </div>
           <div className="ActionsContainer">
             <Actions
+              isDisabled={!this.state.isSpecialAttackAvailable}
               onAttackClicked={this.attackHandler}
-              onSpecialAttackClicked={this.specialAttackHandler}
               onHealClicked={this.playerHealHandler}
-              onResetClicked={this.resetGameHandler}
-              isDisabled={this.state.isSpecialAttackAvailable} />
+              onResetClicked={this.resetHandler}
+              onSpecialAttackClicked={this.specialAttackHandler} />
           </div>
         </section>
-        <section className="Right">
+        <section className="RightSection">
           {this.renderMoves()}
         </section>
       </>

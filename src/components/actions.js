@@ -1,15 +1,14 @@
 import Button from '../components/button';
+import PropTypes from 'prop-types';
 
-const actions = (props) => {
-  return (
-    <div className="Actions">
-      <Button actionType="attack" type="danger" clicked={props.onAttackClicked}>Attack</Button>
-      <Button actionType="special-attack" type="warning" clicked={props.onSpecialAttackClicked} isDisabled={props.isDisabled}>Special Attack</Button>
-      <Button actionType="heal" type="success" clicked={props.onHealClicked}>Heal</Button>
-      <Button actionType="give-up" clicked={props.onResetClicked} type="primary">Give Up</Button>
-    </div>
-  );
-};
+const actions = (props) => (
+  <div className="Actions">
+    <Button actionType="attack" clicked={props.onAttackClicked} type="danger">Attack</Button>
+    <Button actionType="special-attack" clicked={props.onSpecialAttackClicked} isDisabled={props.isDisabled} type="warning">Special Attack</Button>
+    <Button actionType="heal" clicked={props.onHealClicked} type="success">Heal</Button>
+    <Button actionType="give-up" clicked={props.onResetClicked} type="primary">Give Up</Button>
+  </div>
+);
 
 actions.defaultProps = {
   isDisabled: false,
@@ -17,6 +16,14 @@ actions.defaultProps = {
   onHealClicked: () => {},
   onResetClicked: () => {},
   onSpecialAttackClicked: () => {}
+};
+
+actions.propTypes = {
+  isDisabled: PropTypes.bool,
+  onAttackClicked: PropTypes.func,
+  onHealClicked: PropTypes.func,
+  onResetClicked: PropTypes.func,
+  onSpecialAttackClicked: PropTypes.func
 };
 
 export default actions;

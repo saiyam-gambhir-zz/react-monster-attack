@@ -18,11 +18,11 @@ body {
   justify-content: space-between;
 }
 
-.Game .Left {
+.Game .LeftSection {
   flex: .75;
 }
 
-.Game .Right {
+.Game .RightSection {
   flex: .23;
   border: 2px solid #211a1d;
   padding: 20px;
@@ -34,7 +34,7 @@ body {
   height: calc(100vh - 130px);
 }
 
-.player {
+.Player {
   align-items: center;
   display: flex;
   flex: 1;
@@ -42,43 +42,59 @@ body {
   position: relative;
 }
 
-.playerType {
+.PlayerType {
   font-size: 50px;
   letter-spacing: 5px;
   text-transform: uppercase;
   text-shadow: 1px 1px 1px #211a1d;
   color: #211a1d;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
-.background {
+.Background {
   height: 100%;
   pointer-events: none;
   position: absolute;
   top: 0;
   transition: .2s;
   width: 100%;
-  z-index: -1;
 }
 
-.player.normal {
+.Player.normal {
   border-right: 1px solid #211a1d;
   border-left: 2px solid #211a1d;
   border-top: 2px solid #211a1d;
+  background: lighten(#cffdff, 5%);
 }
 
-.player.monster {
+.Player.monster {
   border-left: 1px solid #211a1d;
   border-right: 2px solid #211a1d;
   border-top: 2px solid #211a1d;
+  background: lighten(#ffb9b9, 10%);
 }
 
-.player.normal .background {
+@keyframes animateThis {
+  0% {
+    width: 0px;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.Player .Background {
+  animation: animateThis .5s;
+}
+
+.Player.normal .Background {
   background: #cffdff;
   left: 0;
 }
 
-.player.monster .background {
+.Player.monster .Background {
   background: #ffb9b9;
   right: 0;
 }
@@ -143,22 +159,22 @@ body {
   border-color: #211a1d;
 }
 
-.movesContainer {
+.MovesContainer {
   border: 2px solid #211a1d;
 }
 
-.movesContainer + .movesContainer {
+.MovesContainer + .MovesContainer {
   margin-top: 15px;
 }
 
-.monsterMove {
+.MonsterMove {
   background: #ffb9b9;
   padding: 10px;
   text-transform: capitalize;
   font-size: 18px;
 }
 
-.playerMove {
+.PlayerMove {
   background: #cffdff;
   padding: 10px;
   text-transform: capitalize;
