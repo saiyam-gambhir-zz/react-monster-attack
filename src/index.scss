@@ -13,6 +13,7 @@ body {
 }
 
 .Game {
+  align-items: center;
   display: flex;
   height: calc(100vh - 40px);
   justify-content: space-between;
@@ -100,9 +101,10 @@ body {
 }
 
 .ActionsContainer {
-  height: 90px;
-  padding: 20px;
   border: 2px solid #211a1d;
+  height: 90px;
+  overflow: hidden;
+  padding: 20px;
 }
 
 .Actions {
@@ -146,6 +148,15 @@ body {
   background: #fef9ef;
 }
 
+.Button.start {
+  background: #50ad21;
+  color: #fff;
+  height: 100%;
+  font-size: 125px;
+  border-width: 3px;
+  text-decoration: underline;
+}
+
 .Button:hover {
   border-color: transparent;
 }
@@ -179,4 +190,12 @@ body {
   padding: 10px;
   text-transform: capitalize;
   font-size: 18px;
+}
+
+.Main {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
 }

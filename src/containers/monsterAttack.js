@@ -3,10 +3,11 @@ import Actions from '../components/actions';
 import Move from '../components/move';
 import Player from '../components/player';
 import { Component } from "react";
+import { motion } from "framer-motion";
 
 class MonsterAttack extends Component {
 
-  createPlayer = ({maxHealth = 100, maxAttackDamage, maxHeal = 10, minAttackDamage = 1, specialAttackMaxDamage = 20, specialAttackMinDamage = 10, type}) => {
+  createPlayer = ({maxHealth, maxAttackDamage, maxHeal = 10, minAttackDamage = 1, specialAttackMaxDamage = 20, specialAttackMinDamage = 10, type}) => {
     return {
       maxAttackDamage,
       maxHeal,
@@ -19,12 +20,22 @@ class MonsterAttack extends Component {
   };
 
   state = {
+    isGameStarted: false,
     isSpecialAttackAvailable: true,
     moves: [],
     players: {
-      normal: {...this.createPlayer({maxAttackDamage: 10, type: 'normal'})},
-      monster: {...this.createPlayer({maxAttackDamage: 20, maxHeal: 0, type: 'monster'})}
+      normal: {maxHealth: 0},
+      monster: {maxHealth: 0}
     }
+  };
+
+  startGameHandle = () => {
+    let players = {
+      normal: {...this.createPlayer({maxAttackDamage: 10, maxHealth: 100, type: 'normal'})},
+      monster: {...this.createPlayer({maxAttackDamage: 20, maxHealth: 100, maxHeal: 0, type: 'monster'})}
+    };
+
+    this.setState({ players, isGameStarted: true });
   };
 
   attackDamageGenerator = (players, type) => {
@@ -101,7 +112,7 @@ class MonsterAttack extends Component {
   updateMoves = (attackType, monsterAttackDamage, playerAttackDamage) => {
     let moves = this.movesGenerator(attackType, monsterAttackDamage, playerAttackDamage);
     let updatedMoves = this.state.moves;
-    updatedMoves = [moves, ...updatedMoves];
+    updatedMoves = [...updatedMoves, moves];
     this.setState({moves: updatedMoves});
   };
 
@@ -153,22 +164,26 @@ class MonsterAttack extends Component {
     const { normal, monster } = updatedPlayers;
     normal.maxHealth = 100;
     monster.maxHealth = 100;
-    this.setState({isSpecialAttackAvailable: true, moves:[], players: updatedPlayers});
+    this.setState({ isGameStarted: false, isSpecialAttackAvailable: true, moves:[], players: updatedPlayers});
   };
 
   renderPlayers = () => {
-    return Object.keys(this.state.players).map(key =>
-      <Player key={key} {...this.state.players[key]} />
-    );
+    if(this.state.isGameStarted) {
+      return Object.keys(this.state.players).map(key =>
+        <Player key={key} {...this.state.players[key]} />
+      );
+    }
   };
 
   renderMoves = () => {
-    return this.state.moves.map((move, index) => <Move move={move} key={index} />);
+    if(this.state.isGameStarted) {
+      return this.state.moves.map((move, index) => <Move move={move} key={index} />);
+    }
   };
 
   render () {
-    return (
-      <>
+    return this.state.isGameStarted ?
+      <motion.div className="Main" initial={{x: '100%'}} animate={{x: 0}} transition={{duration: .5}}>
         <section className="LeftSection">
           <div className="Players">
             {this.renderPlayers()}
@@ -185,8 +200,7 @@ class MonsterAttack extends Component {
         <section className="RightSection">
           {this.renderMoves()}
         </section>
-      </>
-    )
+      </motion.div> : <motion.button initial={{x: '100%'}} animate={{x: 0}} transition={{duration: .25}} className="Button start" onClick={this.startGameHandle}>Start</motion.button>;
   };
 };
 
