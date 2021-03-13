@@ -169,19 +169,9 @@ class MonsterAttack extends Component {
     this.setState({ isGameStarted: false, isSpecialAttackAvailable: true, moves:[], players: updatedPlayers});
   };
 
-  renderPlayers = () => {
-    if(this.state.isGameStarted) {
-      return Object.keys(this.state.players).map(key =>
-        <Player key={key} {...this.state.players[key]} />
-      );
-    }
-  };
+  renderPlayers = () => Object.keys(this.state.players).map(key => <Player key={key} {...this.state.players[key]} />);
 
-  renderMoves = () => {
-    if(this.state.isGameStarted) {
-      return this.state.moves.map((move, index) => <Move move={move} key={index} />);
-    }
-  };
+  renderMoves = () => this.state.moves.map((move, index) => <Move move={move} key={index} />);
 
   render () {
     return this.state.isGameStarted ?
